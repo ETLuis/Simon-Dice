@@ -1,135 +1,131 @@
 package com.dam2.simondice
 
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Log.d("Estado", "Estoy en onCreate")
-        val botonInicio:Button =  findViewById(R.id.button7)
-        val botonAzul:Button =  findViewById(R.id.button8)
-        val botonAmarillo:Button =  findViewById(R.id.button9)
-        val botonRojo:Button =  findViewById(R.id.button10)
-        val botonVerde:Button =  findViewById(R.id.button11)
-        val texto:TextView = findViewById(R.id.textView3)
+
+        val botonInicio: Button = findViewById(R.id.button7)
+        val botonAzul: Button = findViewById(R.id.button8)
+        val botonAmarillo: Button = findViewById(R.id.button9)
+        val botonRojo: Button = findViewById(R.id.button10)
+        val botonVerde: Button = findViewById(R.id.button11)
+        val texto: TextView = findViewById(R.id.textView3)
         val random: Int = (0..3).random()
         val colores: Array<String> = arrayOf("Verde", "Amarillo", "Azul", "Rojo")
 
         botonInicio.setOnClickListener() {
             inicioPartida()
-            //visualizarSecuencia
             botonInicio.visibility = View.INVISIBLE
+            secuenciaCourutina()
+
+
         }
 
-        botonAzul.setOnClickListener(){
-            visualizarColor()
-        }
 
-        botonAmarillo.setOnClickListener(){
-            visualizarColor()
-        }
-        botonVerde.setOnClickListener(){
-            visualizarColor()
-        }
-
-        botonRojo.setOnClickListener(){
-            visualizarColor()
-        }
     }
 
 
-     fun inicioPartida(){
-        val botonAzul:Button =  findViewById(R.id.button8)
-        val botonAmarillo:Button =  findViewById(R.id.button9)
-        val botonRojo:Button =  findViewById(R.id.button10)
-        val botonVerde:Button =  findViewById(R.id.button11)
-        val random: Int = (0..3).random()
-        val buleano:Boolean = true
-
-        Toast.makeText(this,"Has iniciado partida",Toast.LENGTH_SHORT).show()
-
-         GlobalScope.launch {
-             if (random == 0) {
-                 delay(3000L)
-                 botonAzul.setBackgroundColor(Color.CYAN)
-             }
-             if (random == 1) {
-                 delay(3000L)
-                 botonAmarillo.setBackgroundColor(Color.YELLOW)
-             }
-             if (random == 2) {
-                 delay(3000L)
-                 botonRojo.setBackgroundColor(Color.RED)
-
-             }
-             if (random == 3) {
-                 delay(3000L)
-                 botonVerde.setBackgroundColor(Color.GREEN)
-             }
-         }
-
-    }
-
-    fun visualizarColor() {
+    fun inicioPartida() {
         val botonAzul: Button = findViewById(R.id.button8)
         val botonAmarillo: Button = findViewById(R.id.button9)
         val botonRojo: Button = findViewById(R.id.button10)
         val botonVerde: Button = findViewById(R.id.button11)
         val random: Int = (0..3).random()
+        val buleano: Boolean = true
 
-        GlobalScope.launch {
-            if (random == 0) {
-                botonAzul.setBackgroundColor(Color.CYAN)
 
-            }
-            if (random == 1) {
-                botonAmarillo.setBackgroundColor(Color.YELLOW)
-            }
-            if (random == 2) {
-                botonRojo.setBackgroundColor(Color.RED)
+        botonAzul.visibility = View.INVISIBLE
+        botonAmarillo.visibility = View.INVISIBLE
+        botonRojo.visibility = View.INVISIBLE
+        botonVerde.visibility = View.INVISIBLE
 
-            }
-            if (random == 3) {
-                botonVerde.setBackgroundColor(Color.GREEN)
+        Toast.makeText(this, "Has iniciado partida", Toast.LENGTH_SHORT).show()
+    }
 
-            }
+    fun secuenciaCourutina() {
+        val job = GlobalScope.launch(Dispatchers.Main) {
+        visualizarSecuencia()
+    }
+    }
+
+    suspend fun visualizarSecuencia() {
+        val botonAzul: Button = findViewById(R.id.button8)
+        val botonAmarillo: Button = findViewById(R.id.button9)
+        val botonRojo: Button = findViewById(R.id.button10)
+        val botonVerde: Button = findViewById(R.id.button11)
+        var colores = arrayListOf<String>()
+
+       for(z in 1..8){
+
+           println(colores)
+
+           var random: Int = (0..4).random()
+           var num1: Int = 0
+           var num2: Int = 0
+           var num3: Int = 0
+           var num4: Int = 0
+
+           if (random==1){
+               if(num1==0) {
+                   botonAzul.visibility = View.VISIBLE
+                   delay(1000L)
+                   botonAzul.visibility = View.INVISIBLE
+                   num1++
+                   colores.add("Azul")
+               }
+           }
+
+           if (random==2){
+               if(num2==0) {
+                   botonAmarillo.visibility = View.VISIBLE
+                   delay(1000L)
+                   botonAmarillo.visibility = View.INVISIBLE
+                   num2++
+                   colores.add("Amarillo")
+               }
+           }
+
+           if (random==3){
+               if(num3==0) {
+                   botonRojo.visibility = View.VISIBLE
+                   delay(1000L)
+                   botonRojo.visibility = View.INVISIBLE
+                    num3++
+                   colores.add("Rojo")
+               }
+           }
+           if (random==4){
+               if(num4==0) {
+                   botonVerde.visibility = View.VISIBLE
+                   delay(1000L)
+                   botonVerde.visibility = View.INVISIBLE
+                   num4++
+                   colores.add("Verde")
+               }
+           }
+
         }
 
-    }
-/*
-    fun visualizaSecuencia() {
-        var encendido: Job? = null
-
-        encendido = GlobalScope.launch(Dispatchers.Main) {
-            var contador = 3
-            while (contador > 0) {
-                Log.d("Courutina", jobCuentaAtras.toString() + ":" + contandor.toString())
-                delay(1000L) // non-blocking delay para 1 segundo
-                contador--
-            }
-
-        }
-        Log.d("Courutina", "Lanzada:" +
-                " " + jobCuentaAtras.toString())
+        botonAzul.visibility = View.VISIBLE
+        botonAmarillo.visibility = View.VISIBLE
+        botonRojo.visibility = View.VISIBLE
+        botonVerde.visibility = View.VISIBLE
 
     }
-*/
 
 
 
 }
+
+
 
 
