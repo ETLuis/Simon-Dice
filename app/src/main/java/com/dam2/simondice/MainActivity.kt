@@ -14,13 +14,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val botonInicio: Button = findViewById(R.id.button7)
-        val botonAzul: Button = findViewById(R.id.button8)
-        val botonAmarillo: Button = findViewById(R.id.button9)
-        val botonRojo: Button = findViewById(R.id.button10)
-        val botonVerde: Button = findViewById(R.id.button11)
-        val texto: TextView = findViewById(R.id.textView3)
-        val random: Int = (0..3).random()
-        val colores: Array<String> = arrayOf("Verde", "Amarillo", "Azul", "Rojo")
 
         botonInicio.setOnClickListener() {
             inicioPartida()
@@ -79,6 +72,7 @@ class MainActivity : AppCompatActivity() {
                    botonAzul.visibility = View.VISIBLE
                    delay(1000L)
                    botonAzul.visibility = View.INVISIBLE
+                   delay(1000L)
                    num1++
                    colores.add("Azul")
                }
@@ -89,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                    botonAmarillo.visibility = View.VISIBLE
                    delay(1000L)
                    botonAmarillo.visibility = View.INVISIBLE
+                   delay(1000L)
                    num2++
                    colores.add("Amarillo")
                }
@@ -99,6 +94,7 @@ class MainActivity : AppCompatActivity() {
                    botonRojo.visibility = View.VISIBLE
                    delay(1000L)
                    botonRojo.visibility = View.INVISIBLE
+                   delay(1000L)
                     num3++
                    colores.add("Rojo")
                }
@@ -108,6 +104,7 @@ class MainActivity : AppCompatActivity() {
                    botonVerde.visibility = View.VISIBLE
                    delay(1000L)
                    botonVerde.visibility = View.INVISIBLE
+                   delay(1000L)
                    num4++
                    colores.add("Verde")
                }
