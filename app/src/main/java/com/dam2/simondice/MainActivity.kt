@@ -7,8 +7,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
+import org.w3c.dom.Text
 
 class MainActivity : AppCompatActivity() {
+    //Contador para comprobar la secuencia
+    var contador: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -19,11 +22,9 @@ class MainActivity : AppCompatActivity() {
             inicioPartida()
             botonInicio.visibility = View.INVISIBLE
             secuenciaCourutina()
-
+            miSec()
 
         }
-
-
     }
 
 
@@ -46,83 +47,122 @@ class MainActivity : AppCompatActivity() {
 
     fun secuenciaCourutina() {
         val job = GlobalScope.launch(Dispatchers.Main) {
-        visualizarSecuencia()
+            visualizarSecuencia()
+        }
     }
-    }
+
+    //Este es el array de la Secuencia Aleatoria que se usa en el visualizarSecuencia y en miSec para comparar los Arrays
+    var colores = arrayListOf<String>()
+
 
     suspend fun visualizarSecuencia() {
         val botonAzul: Button = findViewById(R.id.button8)
         val botonAmarillo: Button = findViewById(R.id.button9)
         val botonRojo: Button = findViewById(R.id.button10)
         val botonVerde: Button = findViewById(R.id.button11)
-        var colores = arrayListOf<String>()
 
-       for(z in 1..8){
 
-           println(colores)
+        for (z in 0..4) {
+            var random: Int = (1..4).random()
 
-           var random: Int = (0..4).random()
-           var num1: Int = 0
-           var num2: Int = 0
-           var num3: Int = 0
-           var num4: Int = 0
 
-           if (random==1){
-               if(num1==0) {
-                   botonAzul.visibility = View.VISIBLE
-                   delay(1000L)
-                   botonAzul.visibility = View.INVISIBLE
-                   delay(1000L)
-                   num1++
-                   colores.add("Azul")
-               }
-           }
+            if (random == 1) {
+                    botonAzul.visibility = View.VISIBLE
+                    delay(1000L)
+                    botonAzul.visibility = View.INVISIBLE
+                    delay(1000L)
+                    colores.add("Azul")
+                    contador++
+            }
 
-           if (random==2){
-               if(num2==0) {
-                   botonAmarillo.visibility = View.VISIBLE
-                   delay(1000L)
-                   botonAmarillo.visibility = View.INVISIBLE
-                   delay(1000L)
-                   num2++
-                   colores.add("Amarillo")
-               }
-           }
+            if (random == 2) {
+                    botonAmarillo.visibility = View.VISIBLE
+                    delay(1000L)
+                    botonAmarillo.visibility = View.INVISIBLE
+                    delay(1000L)
+                    colores.add("Amarillo")
+                    contador++
+            }
 
-           if (random==3){
-               if(num3==0) {
-                   botonRojo.visibility = View.VISIBLE
-                   delay(1000L)
-                   botonRojo.visibility = View.INVISIBLE
-                   delay(1000L)
-                    num3++
-                   colores.add("Rojo")
-               }
-           }
-           if (random==4){
-               if(num4==0) {
-                   botonVerde.visibility = View.VISIBLE
-                   delay(1000L)
-                   botonVerde.visibility = View.INVISIBLE
-                   delay(1000L)
-                   num4++
-                   colores.add("Verde")
-               }
-           }
+            if (random == 3) {
+                    botonRojo.visibility = View.VISIBLE
+                    delay(1000L)
+                    botonRojo.visibility = View.INVISIBLE
+                    delay(1000L)
+                    colores.add("Rojo")
+                    contador++
+            }
+            if (random == 4) {
+                    botonVerde.visibility = View.VISIBLE
+                    delay(1000L)
+                    botonVerde.visibility = View.INVISIBLE
+                    delay(1000L)
+                    colores.add("Verde")
+                    contador++
+            }
 
+            println(colores)
         }
 
         botonAzul.visibility = View.VISIBLE
         botonAmarillo.visibility = View.VISIBLE
         botonRojo.visibility = View.VISIBLE
         botonVerde.visibility = View.VISIBLE
-
     }
 
+    //Este es el array del jugador, lo uso después de la secuencia random
+    var miSecuencia = arrayListOf<String>()
 
+    fun miSec() {
+        val botonAzul: Button = findViewById(R.id.button8)
+        val botonAmarillo: Button = findViewById(R.id.button9)
+        val botonRojo: Button = findViewById(R.id.button10)
+        val botonVerde: Button = findViewById(R.id.button11)
+
+        println(colores.size)
+        var numeroColores: Int = colores.size
+
+        botonAzul.setOnClickListener() {
+            miSecuencia.add("Azul")
+            println("Secuencia jugador:" + miSecuencia)
+            comprobarSec()
+        }
+        botonAmarillo.setOnClickListener() {
+            miSecuencia.add("Amarillo")
+            println("Secuencia jugador:" + miSecuencia)
+            comprobarSec()
+        }
+        botonRojo.setOnClickListener() {
+            miSecuencia.add("Rojo")
+            println("Secuencia jugador:" + miSecuencia)
+            comprobarSec()
+        }
+        botonVerde.setOnClickListener() {
+            miSecuencia.add("Verde")
+            println("Secuencia jugador:" + miSecuencia)
+            comprobarSec()
+        }
+
+        println(miSecuencia)
+    }
+
+    //Hago un string para enviar el contador por pantalla
+    var string: String = ""
+    fun comprobarSec() {
+        var sumador: Int = 0
+
+        if (contador == 5) {
+            if (miSecuencia == colores) {
+                sumador = sumador + 1
+                string = sumador.toString()
+                val rondas: TextView = findViewById(R.id.textView)
+                rondas.setText(string)
+                Toast.makeText(this, "Acertaste", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
 }
-
 
 
 
