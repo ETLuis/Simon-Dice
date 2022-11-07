@@ -12,6 +12,7 @@ import org.w3c.dom.Text
 class MainActivity : AppCompatActivity() {
     //Contador para comprobar la secuencia
     var contador: Int = 0
+    var contadorJugador: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -19,11 +20,9 @@ class MainActivity : AppCompatActivity() {
         val botonInicio: Button = findViewById(R.id.button7)
 
         botonInicio.setOnClickListener() {
+            Toast.makeText(this, "Has iniciado partida", Toast.LENGTH_SHORT).show()
             inicioPartida()
             botonInicio.visibility = View.INVISIBLE
-            secuenciaCourutina()
-            miSec()
-
         }
     }
 
@@ -33,16 +32,16 @@ class MainActivity : AppCompatActivity() {
         val botonAmarillo: Button = findViewById(R.id.button9)
         val botonRojo: Button = findViewById(R.id.button10)
         val botonVerde: Button = findViewById(R.id.button11)
-        val random: Int = (0..3).random()
-        val buleano: Boolean = true
 
+        contador = 0
+        contadorJugador = 0
 
         botonAzul.visibility = View.INVISIBLE
         botonAmarillo.visibility = View.INVISIBLE
         botonRojo.visibility = View.INVISIBLE
         botonVerde.visibility = View.INVISIBLE
 
-        Toast.makeText(this, "Has iniciado partida", Toast.LENGTH_SHORT).show()
+        secuenciaCourutina()
     }
 
     fun secuenciaCourutina() {
@@ -61,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         val botonRojo: Button = findViewById(R.id.button10)
         val botonVerde: Button = findViewById(R.id.button11)
 
+        colores.clear()
 
         for (z in 0..4) {
             var random: Int = (1..4).random()
@@ -108,6 +108,8 @@ class MainActivity : AppCompatActivity() {
         botonAmarillo.visibility = View.VISIBLE
         botonRojo.visibility = View.VISIBLE
         botonVerde.visibility = View.VISIBLE
+
+        miSec()
     }
 
     //Este es el array del jugador, lo uso después de la secuencia random
@@ -122,24 +124,30 @@ class MainActivity : AppCompatActivity() {
         println(colores.size)
         var numeroColores: Int = colores.size
 
+        miSecuencia.clear()
+
         botonAzul.setOnClickListener() {
             miSecuencia.add("Azul")
             println("Secuencia jugador:" + miSecuencia)
+            contadorJugador++
             comprobarSec()
         }
         botonAmarillo.setOnClickListener() {
             miSecuencia.add("Amarillo")
             println("Secuencia jugador:" + miSecuencia)
+            contadorJugador++
             comprobarSec()
         }
         botonRojo.setOnClickListener() {
             miSecuencia.add("Rojo")
             println("Secuencia jugador:" + miSecuencia)
+            contadorJugador++
             comprobarSec()
         }
         botonVerde.setOnClickListener() {
             miSecuencia.add("Verde")
             println("Secuencia jugador:" + miSecuencia)
+            contadorJugador++
             comprobarSec()
         }
 
@@ -158,6 +166,10 @@ class MainActivity : AppCompatActivity() {
                 val rondas: TextView = findViewById(R.id.textView)
                 rondas.setText(string)
                 Toast.makeText(this, "Acertaste", Toast.LENGTH_SHORT).show()
+                inicioPartida()
+            } else if (miSecuencia != colores && contadorJugador==5){
+                Toast.makeText(this, "Fallaste", Toast.LENGTH_SHORT).show()
+                inicioPartida()
             }
         }
     }
