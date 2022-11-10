@@ -1,21 +1,47 @@
 package com.dam2.simondice
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import kotlinx.coroutines.*
-import org.w3c.dom.Text
 
 class MainActivity : AppCompatActivity() {
     //Contador para comprobar la secuencia
     var contador: Int = 0
     var contadorJugador: Int = 0
+    private val TAG_LOG: String = "mensaje Main"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //Creo un viewModels y instancio un botón
+        val miModelo by viewModels<MyViewModel>()
+        val botonNuevoRandom: Button = findViewById(R.id.roll_button)
+
+        botonNuevoRandom.setOnClickListener {
+            // llamo a la función del ViewModel
+            miModelo.sumarRandom()
+            Log.d(TAG_LOG, "Actualizo ronda")
+        }
+
+        miModelo.livedata_numbers.observe(
+            this,
+            Observer(
+                // funcion que cambia el numero
+                fun(nuevaListaRandom: MutableList<Int>) {
+                    var textRandom: TextView = findViewById(R.id.textRandom)
+                    textRandom.text = nuevaListaRandom.toString()
+                }
+            )
+        )
+
+
 
         val botonInicio: Button = findViewById(R.id.button7)
 
@@ -156,19 +182,20 @@ class MainActivity : AppCompatActivity() {
 
     //Hago un string para enviar el contador por pantalla
     var string: String = ""
+    var sumador: Int = 0
     fun comprobarSec() {
-        var sumador: Int = 0
 
         if (contador == 5) {
+            val rondas: TextView = findViewById(R.id.textView)
             if (miSecuencia == colores) {
                 sumador = sumador + 1
                 string = sumador.toString()
-                val rondas: TextView = findViewById(R.id.textView)
                 rondas.setText(string)
                 Toast.makeText(this, "Acertaste", Toast.LENGTH_SHORT).show()
                 inicioPartida()
             } else if (miSecuencia != colores && contadorJugador==5){
                 Toast.makeText(this, "Fallaste", Toast.LENGTH_SHORT).show()
+                rondas.setText("0")
                 inicioPartida()
             }
         }
