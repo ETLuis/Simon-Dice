@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
 
     //Este es el array de la Secuencia Aleatoria que se usa en el visualizarSecuencia y en miSec para comparar los Arrays
     var colores = arrayListOf<String>()
-
+    var randomSec: Int = 5
 
     suspend fun visualizarSecuencia() {
         val botonAzul: Button = findViewById(R.id.button8)
@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 
         colores.clear()
 
-        for (z in 0..4) {
+        for (z in 1..randomSec) {
             var random: Int = (1..4).random()
 
 
@@ -180,25 +180,49 @@ class MainActivity : AppCompatActivity() {
         println(miSecuencia)
     }
 
+
+
     //Hago un string para enviar el contador por pantalla
     var string: String = ""
     var sumador: Int = 0
     fun comprobarSec() {
 
-        if (contador == 5) {
+        if (contador == randomSec) {
             val rondas: TextView = findViewById(R.id.textView)
             if (miSecuencia == colores) {
                 sumador = sumador + 1
                 string = sumador.toString()
                 rondas.setText(string)
+                randomSec = randomSec + 1
                 Toast.makeText(this, "Acertaste", Toast.LENGTH_SHORT).show()
-                inicioPartida()
-            } else if (miSecuencia != colores && contadorJugador==5){
+                record()
+
+            } else if (miSecuencia != colores && contadorJugador==randomSec){
+                randomSec = randomSec + 1
                 Toast.makeText(this, "Fallaste", Toast.LENGTH_SHORT).show()
                 rondas.setText("0")
+                contador=5
+                randomSec=5
+                sumador=0
+
                 inicioPartida()
             }
         }
+    }
+    var recordNum: Int = 0
+    fun record() {
+        val record: TextView = findViewById(R.id.textView4)
+        var string2: String = ""
+
+        if(recordNum<=sumador) {
+            recordNum = recordNum + 1
+            string2 = recordNum.toString()
+            record.setText(string2)
+        }
+
+
+
+        inicioPartida()
     }
 
 }
