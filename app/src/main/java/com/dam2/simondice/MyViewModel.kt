@@ -2,6 +2,7 @@ package com.dam2.simondice
 
 
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlin.random.Random
@@ -22,6 +23,7 @@ class MyViewModel() : ViewModel() {
     }
 
     fun sumarRandom() {
+
         // añadimos entero random a la lista
         numbers.add(Random.nextInt(0,4))
         // actualizamos el livedata, de esta manera si hay un observador
@@ -30,4 +32,6 @@ class MyViewModel() : ViewModel() {
         // la mostramos en el logcat
         Log.d(TAG_LOG, "Añadimos Array al livedata:" + numbers.toString())
     }
+
+
 }

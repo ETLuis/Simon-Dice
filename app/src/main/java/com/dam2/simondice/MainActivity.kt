@@ -20,29 +20,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //Creo un viewModels y instancio un botón
-        val miModelo by viewModels<MyViewModel>()
-        val botonNuevoRandom: Button = findViewById(R.id.roll_button)
-
-        botonNuevoRandom.setOnClickListener {
-            // llamo a la función del ViewModel
-            miModelo.sumarRandom()
-            Log.d(TAG_LOG, "Actualizo ronda")
-        }
-
-        miModelo.livedata_numbers.observe(
-            this,
-            Observer(
-                // funcion que cambia el numero
-                fun(nuevaListaRandom: MutableList<Int>) {
-                    var textRandom: TextView = findViewById(R.id.textRandom)
-                    textRandom.text = nuevaListaRandom.toString()
-                }
-            )
-        )
-
-
-
         val botonInicio: Button = findViewById(R.id.button7)
 
         botonInicio.setOnClickListener() {
@@ -147,7 +124,6 @@ class MainActivity : AppCompatActivity() {
         val botonRojo: Button = findViewById(R.id.button10)
         val botonVerde: Button = findViewById(R.id.button11)
 
-        println(colores.size)
         var numeroColores: Int = colores.size
 
         miSecuencia.clear()
@@ -211,16 +187,43 @@ class MainActivity : AppCompatActivity() {
     }
     var recordNum: Int = 0
     fun record() {
-        val record: TextView = findViewById(R.id.textView4)
         var string2: String = ""
-
-        if(recordNum<=sumador) {
-            recordNum = recordNum + 1
-            string2 = recordNum.toString()
-            record.setText(string2)
-        }
+        val miModelo by viewModels<MyViewModel>()
+        val botonNuevoRandom: Button = findViewById(R.id.roll_button)
+        var numListaRam: Int = 0
 
 
+
+        miModelo.livedata_numbers.observe(
+            this,
+            Observer(
+                // funcion que cambia el numero
+                fun(nuevaListaRandom: MutableList<Int>) {
+                    var textRandom: TextView = findViewById(R.id.textRandom)
+                    if(recordNum<sumador) {
+                        recordNum = recordNum + 1
+                        string2 = recordNum.toString()
+                        textRandom.text = string2
+                        nuevaListaRandom.add(recordNum)
+                        println("Este es el array record del livedata " + nuevaListaRandom)
+
+                        botonNuevoRandom.setOnClickListener {
+                            // llamo a la función del ViewModel
+                            miModelo.sumarRandom()
+                            Log.d(TAG_LOG, "Actualizo record y ronda")
+                            numListaRam = nuevaListaRandom.last()
+                            println ("CAMBIASTE DE RONDA " + numListaRam)
+
+                            contador=numListaRam + 5
+                            randomSec=numListaRam + 5
+                            sumador=0
+                            inicioPartida()
+                        }
+
+                    }
+                }
+            )
+        )
 
         inicioPartida()
     }
