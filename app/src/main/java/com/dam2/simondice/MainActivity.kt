@@ -200,6 +200,9 @@ class MainActivity : AppCompatActivity() {
                 // funcion que cambia el numero
                 fun(nuevaListaRandom: MutableList<Int>) {
                     var textRandom: TextView = findViewById(R.id.textRandom)
+                    val rondas: TextView = findViewById(R.id.textView)
+                    var convertidorRondaRandom : String
+
                     if(recordNum<sumador) {
                         recordNum = recordNum + 1
                         string2 = recordNum.toString()
@@ -217,6 +220,10 @@ class MainActivity : AppCompatActivity() {
                             contador=numListaRam + 5
                             randomSec=numListaRam + 5
                             sumador=0
+                            convertidorRondaRandom = numListaRam.toString()
+                            rondas.setText(convertidorRondaRandom)
+                            textRandom.setText(convertidorRondaRandom)
+
                             inicioPartida()
                         }
 

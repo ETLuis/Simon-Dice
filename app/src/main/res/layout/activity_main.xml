@@ -124,7 +124,7 @@
         android:layout_marginTop="140dp"
         android:layout_marginEnd="28dp"
         android:layout_marginBottom="80dp"
-        android:text="Ronda \n Ramdon"
+        android:text="Ronda \n Random"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button10"

@@ -1,13 +1,16 @@
 package com.dam2.simondice
 
 
+import android.app.Application
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.room.Room
 import kotlin.random.Random
 
-class MyViewModel() : ViewModel() {
+class MyViewModel(application:Application) : AndroidViewModel(application) {
 
     // Etiqueta del log
     private val TAG_LOG: String = "mensaje ViewModel"
@@ -33,5 +36,9 @@ class MyViewModel() : ViewModel() {
         Log.d(TAG_LOG, "Añadimos Array al livedata:" + numbers.toString())
     }
 
+    val db = Room.databaseBuilder(
+        getApplication<Application>().applicationContext,
+        RondaDataBase::class.java, "User"
+    ).build()
 
 }
