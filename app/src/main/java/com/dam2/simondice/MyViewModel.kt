@@ -5,39 +5,64 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.lang.NullPointerException
 import kotlin.random.Random
 
 class MyViewModel(application:Application) : AndroidViewModel(application) {
 
     // Etiqueta del log
     private val TAG_LOG: String = "mensaje ViewModel"
-    // Lista para la secuencia random
-    val numbers = mutableListOf<Int>()
+    // Lista para la variable de la ronda
+    var ronda = MutableLiveData<Int>()
+    // Lista para la variable de la record
+    var record = MutableLiveData<Int>()
     // Instancio una MutableLiveData
-    val livedata_numbers = MutableLiveData<MutableList<Int>>()
-
+    val livedata_ronda= MutableLiveData<MutableList<Int>>()
+    // Creamos un contexto de la aplicación para el builder
+    private val context = getApplication<Application>().applicationContext
+    // Creo una variable
+    private var room : AppDataBase? = null
 
     init {
         Log.d(TAG_LOG, "Inicializamos livedata")
-        livedata_numbers.value = numbers
+        room = Room
+            .databaseBuilder(context,
+                AppDataBase::class.java, "records")
+            .build()
+
+        val courutinaRoom = GlobalScope.launch(Dispatchers.Main) {
+            try {
+                record.value = room!!.userDao().getRonda()
+            } catch(ex : NullPointerException) {
+                room!!.userDao().crearRonda()
+                record.value = room!!.userDao().getRonda()
+            }
+        }
     }
 
-    fun sumarRandom() {
-
-        // añadimos entero random a la lista
-        numbers.add(Random.nextInt(0,4))
-        // actualizamos el livedata, de esta manera si hay un observador
-        // este recibirá la nueva lista
-        livedata_numbers.setValue(numbers)
-        // la mostramos en el logcat
-        Log.d(TAG_LOG, "Añadimos Array al livedata:" + numbers.toString())
+    fun actualizarRecord() {
+        record.value = ronda.value
+        val updateCorrutine = GlobalScope.launch(Dispatchers.Main) {
+                room!!.userDao().update(User(1, ronda.value!!))
+        }
+        updateCorrutine.start()
     }
 
-    val db = Room.databaseBuilder(
-        getApplication<Application>().applicationContext,
-        AppDataBase::class.java, "User"
-    ).build()
+    fun reiniciaRecord() {
+        val resetCorrutine = GlobalScope.launch(Dispatchers.Main) {
+            room!!.userDao().update(User(1, 0))
+            record.value = room!!.userDao().getRonda()
+        }
+        resetCorrutine.start()
+    }
 
-    val userDao = db.userDao()
-    val users: List<User> = userDao.getAll()
+    fun sumarRonda(){
+        ronda.value = ronda.value?.plus(1)
+    }
+    fun reiniciarRonda() {
+        ronda.value = 0
+    }
 }

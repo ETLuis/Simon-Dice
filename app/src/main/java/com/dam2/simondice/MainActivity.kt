@@ -16,6 +16,8 @@ class MainActivity : AppCompatActivity() {
     var contador: Int = 0
     var contadorJugador: Int = 0
     private val TAG_LOG: String = "mensaje Main"
+    var textRecord: TextView = findViewById(R.id.textRandom)
+    private val miViewModelo by viewModels<MyViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -24,6 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         botonInicio.setOnClickListener() {
             Toast.makeText(this, "Has iniciado partida", Toast.LENGTH_SHORT).show()
+            textRecord.text = miViewModelo.ronda.value.toString()
             inicioPartida()
             botonInicio.visibility = View.INVISIBLE
         }
@@ -194,14 +197,12 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        miModelo.livedata_numbers.observe(
+        miModelo.livedata_ronda.observe(
             this,
             Observer(
                 // funcion que cambia el numero
                 fun(nuevaListaRandom: MutableList<Int>) {
-                    var textRandom: TextView = findViewById(R.id.textRandom)
                     val rondas: TextView = findViewById(R.id.textView)
-                    var convertidorRondaRandom : String
 
                     if(recordNum<sumador) {
                         recordNum = recordNum + 1
@@ -210,22 +211,13 @@ class MainActivity : AppCompatActivity() {
                         nuevaListaRandom.add(recordNum)
                         println("Este es el array record del livedata " + nuevaListaRandom)
 
-                        botonNuevoRandom.setOnClickListener {
+
                             // llamo a la función del ViewModel
-                            miModelo.sumarRandom()
+                            miModelo.actualizarRecord()
                             Log.d(TAG_LOG, "Actualizo record y ronda")
                             numListaRam = nuevaListaRandom.last()
-                            println ("CAMBIASTE DE RONDA " + numListaRam)
+                            println ("CAMBIASTE DE RONDA " + numListaRandom)
 
-                            contador=numListaRam + 5
-                            randomSec=numListaRam + 5
-                            sumador=0
-                            convertidorRondaRandom = numListaRam.toString()
-                            rondas.setText(convertidorRondaRandom)
-                            textRandom.setText(convertidorRondaRandom)
-
-                            inicioPartida()
-                        }
 
                     }
                 }
