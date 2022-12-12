@@ -2,8 +2,9 @@ package com.dam2.simondice
 
 import androidx.room.*
 
-@Entity
+@Entity(tableName = "mi_tabla")
 data class User(
-    @PrimaryKey val id: Int,
-    var Ronda: Int,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id") val id: Int=0,
+    @ColumnInfo(name = "Ronda") val Ronda: Int,
 )

@@ -5,12 +5,10 @@ import androidx.room.*
 @Dao
 interface UserDao {
 
-    @Query("SELECT ronda FROM user where id=1") //Recojo todos los usuarios
-    suspend fun getRonda(): Int
+    //Recojo la tabla
+    @Query("SELECT * FROM mi_tabla ORDER BY Ronda DESC")
+    suspend fun getAllQuotes():List<Entity>
 
-    @Query("INSERT INTO User (ronda) VALUES (0)")
-    suspend fun crearRonda()
-
-    @Update
-    suspend fun update(record: User)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(quotes:List<Entity>)
 }
