@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.*
+import androidx.room.Room
 
 class MainActivity : AppCompatActivity() {
     //Contador para comprobar la secuencia
@@ -17,10 +18,36 @@ class MainActivity : AppCompatActivity() {
     var contadorJugador: Int = 0
     private val TAG_LOG: String = "mensaje Main"
     var textRecord: TextView = findViewById(R.id.textRandom)
+    val rondas: TextView = findViewById(R.id.textView)
+    var recordText: TextView = findViewById(R.id.textRandom)
+
+
+    private var record = 0
     private val miViewModelo by viewModels<MyViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+/*
+        //Hago una courrutina para la base de datos porque no se puede ejecutar en el hilo principal
+        val CourutinaRoom = GlobalScope.launch(Dispatchers.Main) {
+            //Instancio la base de datos
+            val room: AppDataBase = Room
+                .databaseBuilder(applicationContext,
+                    AppDataBase::class.java, "records")
+                .build()
+
+            //Si es la primera vez que se hace le doy un valor a la ronda
+            try {
+                record = room.userDao().getRonda()
+            } catch(ex : IndexOutOfBoundsException) {
+                room.userDao().crearRonda()
+                record = room.userDao().getRonda()
+            }
+
+        }
+        //Inicio la courrutina
+        CourutinaRoom.start()
+*/
 
         val botonInicio: Button = findViewById(R.id.button7)
 
@@ -46,6 +73,9 @@ class MainActivity : AppCompatActivity() {
         botonAmarillo.visibility = View.INVISIBLE
         botonRojo.visibility = View.INVISIBLE
         botonVerde.visibility = View.INVISIBLE
+
+        textRecord.text = miViewModelo.ronda.value.toString()
+
 
         secuenciaCourutina()
     }
@@ -73,38 +103,38 @@ class MainActivity : AppCompatActivity() {
 
 
             if (random == 1) {
-                    botonAzul.visibility = View.VISIBLE
-                    delay(1000L)
-                    botonAzul.visibility = View.INVISIBLE
-                    delay(1000L)
-                    colores.add("Azul")
-                    contador++
+                botonAzul.visibility = View.VISIBLE
+                delay(1000L)
+                botonAzul.visibility = View.INVISIBLE
+                delay(1000L)
+                colores.add("Azul")
+                contador++
             }
 
             if (random == 2) {
-                    botonAmarillo.visibility = View.VISIBLE
-                    delay(1000L)
-                    botonAmarillo.visibility = View.INVISIBLE
-                    delay(1000L)
-                    colores.add("Amarillo")
-                    contador++
+                botonAmarillo.visibility = View.VISIBLE
+                delay(1000L)
+                botonAmarillo.visibility = View.INVISIBLE
+                delay(1000L)
+                colores.add("Amarillo")
+                contador++
             }
 
             if (random == 3) {
-                    botonRojo.visibility = View.VISIBLE
-                    delay(1000L)
-                    botonRojo.visibility = View.INVISIBLE
-                    delay(1000L)
-                    colores.add("Rojo")
-                    contador++
+                botonRojo.visibility = View.VISIBLE
+                delay(1000L)
+                botonRojo.visibility = View.INVISIBLE
+                delay(1000L)
+                colores.add("Rojo")
+                contador++
             }
             if (random == 4) {
-                    botonVerde.visibility = View.VISIBLE
-                    delay(1000L)
-                    botonVerde.visibility = View.INVISIBLE
-                    delay(1000L)
-                    colores.add("Verde")
-                    contador++
+                botonVerde.visibility = View.VISIBLE
+                delay(1000L)
+                botonVerde.visibility = View.INVISIBLE
+                delay(1000L)
+                colores.add("Verde")
+                contador++
             }
 
             println(colores)
@@ -167,67 +197,59 @@ class MainActivity : AppCompatActivity() {
     fun comprobarSec() {
 
         if (contador == randomSec) {
-            val rondas: TextView = findViewById(R.id.textView)
             if (miSecuencia == colores) {
                 sumador = sumador + 1
                 string = sumador.toString()
                 rondas.setText(string)
                 randomSec = randomSec + 1
                 Toast.makeText(this, "Acertaste", Toast.LENGTH_SHORT).show()
+                ronda()
                 record()
+                inicioPartida()
 
             } else if (miSecuencia != colores && contadorJugador==randomSec){
-                randomSec = randomSec + 1
                 Toast.makeText(this, "Fallaste", Toast.LENGTH_SHORT).show()
                 rondas.setText("0")
                 contador=5
                 randomSec=5
                 sumador=0
 
+                rondaReinicio()
                 inicioPartida()
             }
         }
     }
-    var recordNum: Int = 0
-    fun record() {
-        var string2: String = ""
+
+    fun ronda() {
         val miModelo by viewModels<MyViewModel>()
-        val botonNuevoRandom: Button = findViewById(R.id.roll_button)
-        var numListaRam: Int = 0
 
+        miModelo.record.observe(this, Observer {
+            rondas.text = miViewModelo.sumarRonda().toString()
+        })
+    }
 
+    fun record() {
+        val miModelo by viewModels<MyViewModel>()
 
-        miModelo.livedata_ronda.observe(
-            this,
-            Observer(
-                // funcion que cambia el numero
-                fun(nuevaListaRandom: MutableList<Int>) {
-                    val rondas: TextView = findViewById(R.id.textView)
+        miModelo.record.observe(this, Observer {
+            recordText.text = miViewModelo.sumarRecord().toString()
+        })
+    }
 
-                    if(recordNum<sumador) {
-                        recordNum = recordNum + 1
-                        string2 = recordNum.toString()
-                        textRandom.text = string2
-                        nuevaListaRandom.add(recordNum)
-                        println("Este es el array record del livedata " + nuevaListaRandom)
+    fun rondaReinicio() {
+        val miModelo by viewModels<MyViewModel>()
 
+        miModelo.record.observe(this, Observer {
+            rondas.text = miViewModelo.reiniciarRonda().toString()
+        })
+    }
 
-                            // llamo a la función del ViewModel
-                            miModelo.actualizarRecord()
-                            Log.d(TAG_LOG, "Actualizo record y ronda")
-                            numListaRam = nuevaListaRandom.last()
-                            println ("CAMBIASTE DE RONDA " + numListaRandom)
+    fun recordReinicio() {
+        val miModelo by viewModels<MyViewModel>()
 
-
-                    }
-                }
-            )
-        )
-
-        inicioPartida()
+        miModelo.record.observe(this, Observer {
+            recordText.text = miViewModelo.reiniciarRecord().toString()
+        })
     }
 
 }
-
-
-
