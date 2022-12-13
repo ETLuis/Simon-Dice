@@ -10,7 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.*
-import androidx.room.Room
+/*import androidx.room.Room*/
 
 class MainActivity : AppCompatActivity() {
     //Contador para comprobar la secuencia
@@ -198,10 +198,10 @@ class MainActivity : AppCompatActivity() {
 
         if (contador == randomSec) {
             if (miSecuencia == colores) {
-                sumador = sumador + 1
+                /*sumador = sumador + 1
                 string = sumador.toString()
                 rondas.setText(string)
-                randomSec = randomSec + 1
+                randomSec = randomSec + 1*/
                 Toast.makeText(this, "Acertaste", Toast.LENGTH_SHORT).show()
                 ronda()
                 record()
