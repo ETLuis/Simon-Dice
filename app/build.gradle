@@ -5,14 +5,11 @@ plugins {
     id 'com.google.gms.google-services'
 
 }
-
+apply plugin: 'kotlin-kapt'
 android {
     compileSdk 33
 
-    dexOptions{
-        incremental true
-        javaMaxHeapSize "4g"
-    }
+
     defaultConfig {
         applicationId "com.dam2.simondice"
         minSdk 26
@@ -28,6 +25,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    kapt {
+        generateStubs = true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -61,6 +61,7 @@ dependencies {
 
     // To use Kotlin annotation processing tool (kapt)
     kapt("androidx.room:room-compiler:$room_version")
+    kapt ("com.google.dagger:dagger-compiler:$room_version")
 
     //Courutinas
     def coroutines_version = "1.2.1"
@@ -78,13 +79,4 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-database-ktx:20.1.0'
     implementation 'com.google.firebase:firebase-auth-ktx'
-}
-
-android {
-    compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }

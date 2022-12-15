@@ -2,6 +2,7 @@ package com.dam2.simondice
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,33 +47,31 @@ class MyViewModel(application: Application): AndroidViewModel(application) {
         }
         //Añado el listener a la BD
         Firebase_Record.addValueEventListener(recordListener)
-
-
 */
+
+
         Log.d(TAG_LOG, "Inicializamos livedata")
-        room = Room
-            .databaseBuilder(context, AppDataBase::class.java, "UserDao").build()
+        room = Room.databaseBuilder(context, AppDataBase::class.java, "UserDao").build()
 
         val courutinaRoom = GlobalScope.launch(Dispatchers.Main) {
             try {
                 record.value = room!!.userDao().getRonda()
-            } catch(ex : NullPointerException) {
+            } catch(error : NullPointerException) {
                 room!!.userDao().crearRonda()
-                room!!.userDao().crearRecord()
                 record.value = room!!.userDao().getRonda()
-                record.value = room!!.userDao().getRecord()
 
             }
         }
+        courutinaRoom.start()
 
     }
 
     fun actualizarRecord() {
         record.value = ronda.value
-        val updateCorrutine = GlobalScope.launch(Dispatchers.Main) {
+        val actualizarCorrutine = GlobalScope.launch(Dispatchers.Main) {
             room!!.userDao().update(User(1, ronda.value!!, record.value!!))
         }
-        updateCorrutine.start()
+        actualizarCorrutine.start()
     }
 
     fun reiniciaRecord() {

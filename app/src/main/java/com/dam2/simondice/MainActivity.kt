@@ -204,6 +204,7 @@ class MainActivity : AppCompatActivity() {
                 randomSec = randomSec + 1*/
                 Toast.makeText(this, "Acertaste", Toast.LENGTH_SHORT).show()
                 ronda()
+                miViewModelo.actualizarRecord()
                 record()
                 inicioPartida()
 
